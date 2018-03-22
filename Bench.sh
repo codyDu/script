@@ -130,15 +130,15 @@ speed() {
     speed_test '12538' 'Jinan3  CU'
     speed_test '12868' 'Taiyuan  CU'
     speed_test '6435' 'Xiangyang CT'
-    #speed_test '7509' 'Kunming   CT'
+    speed_test '5083' 'Shanghai  CU'
+    speed_test '7509' 'Kunming   CT'
 	speed_test '3633' 'Shanghai  CT'
-	#speed_test '4624' 'Chengdu   CT'
+	speed_test '4624' 'Chengdu   CT'
 	#speed_test '5017' 'Shenyang  CU'
-	speed_test '4863' "Xi'an     CU"
-	speed_test '5083' 'Shanghai  CU'
+	#speed_test '4863' "Xi'an     CU"
 	#speed_test '5726' 'Chongqing CU'
-	speed_test '5292' "Xi'an     CM"
-	speed_test '16314' 'Shandong  CM'
+	#speed_test '5292' "Xi'an     CM"
+	#speed_test '16314' 'Shandong  CM'
 	#speed_test '6715' 'Ningbo    CM'
 	#speed_test '4575' 'Chengdu   CM'
 	 
