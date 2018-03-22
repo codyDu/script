@@ -329,4 +329,85 @@ speed_cn && next
 python /tmp/ZPing-CN.py
 next
 
+NetCFspeec=$( sed -n "2p" /tmp/speed.txt )
+NetCFping=$( sed -n "3p" /tmp/speed.txt )
+NetLJPspeed=$( sed -n "5p" /tmp/speed.txt )
+NetLJPping=$( sed -n "6p" /tmp/speed.txt )
+NetLSGspeed=$( sed -n "8p" /tmp/speed.txt )
+NetLSGping=$( sed -n "9p" /tmp/speed.txt )
+NetLUKspeed=$( sed -n "11p" /tmp/speed.txt )
+NetLUKping=$( sed -n "12p" /tmp/speed.txt )
+NetLDEspeed=$( sed -n "14p" /tmp/speed.txt )
+NetLDEping=$( sed -n "15p" /tmp/speed.txt )
+NetLCAspeed=$( sed -n "17p" /tmp/speed.txt )
+NetLCAping=$( sed -n "18p" /tmp/speed.txt )
+NetSTXspeed=$( sed -n "20p" /tmp/speed.txt )
+NetSTXping=$( sed -n "21p" /tmp/speed.txt )
+NetSWAspeed=$( sed -n "23p" /tmp/speed.txt )
+NetSWAping=$( sed -n "24p" /tmp/speed.txt )
+NetSDEspeed=$( sed -n "26p" /tmp/speed.txt )
+NetSDEping=$( sed -n "27p" /tmp/speed.txt )
+NetSSGspeed=$( sed -n "29p" /tmp/speed.txt )
+NetSSGping=$( sed -n "30p" /tmp/speed.txt )
+NetSCNspeed=$( sed -n "32p" /tmp/speed.txt )
+NetSCNping=$( sed -n "33p" /tmp/speed.txt )
+
+
+NetUPST=$( sed -n "4p" /tmp/speed_cn.txt )
+NetDWST=$( sed -n "5p" /tmp/speed_cn.txt )
+NetPiST=$( sed -n "6p" /tmp/speed_cn.txt )
+NetUPCT=$( sed -n "7p" /tmp/speed_cn.txt )
+NetDWCT=$( sed -n "8p" /tmp/speed_cn.txt )
+NetPiCT=$( sed -n "9p" /tmp/speed_cn.txt )
+NetUPXT=$( sed -n "10p" /tmp/speed_cn.txt )
+NetDWXT=$( sed -n "11p" /tmp/speed_cn.txt )
+NetPiXT=$( sed -n "12p" /tmp/speed_cn.txt )
+NetUPSU=$( sed -n "13p" /tmp/speed_cn.txt )
+NetDWSU=$( sed -n "14p" /tmp/speed_cn.txt )
+NetPiSU=$( sed -n "15p" /tmp/speed_cn.txt )
+NetUPCU=$( sed -n "16p" /tmp/speed_cn.txt )
+NetDWCU=$( sed -n "17p" /tmp/speed_cn.txt )
+NetPiCU=$( sed -n "18p" /tmp/speed_cn.txt )
+NetUPXM=$( sed -n "19p" /tmp/speed_cn.txt )
+NetDWXM=$( sed -n "20p" /tmp/speed_cn.txt )
+NetPiXM=$( sed -n "21p" /tmp/speed_cn.txt )
+NetUPSM=$( sed -n "22p" /tmp/speed_cn.txt )
+NetDWSM=$( sed -n "23p" /tmp/speed_cn.txt )
+NetPiSM=$( sed -n "24p" /tmp/speed_cn.txt )
+NetUPCM=$( sed -n "25p" /tmp/speed_cn.txt )
+NetDWCM=$( sed -n "26p" /tmp/speed_cn.txt )
+NetPiCM=$( sed -n "27p" /tmp/speed_cn.txt )
+wget -N --no-check-certificate https://raw.githubusercontent.com/FunctionClub/ZBench/master/Generate.py >> /dev/null 2>&1
+python Generate.py && rm -rf Generate.py && cp /root/report.html /tmp/report/index.html
+TSM=$( cat /tmp/shm.txt_table )
+TST=$( cat /tmp/sht.txt_table )
+TSU=$( cat /tmp/shu.txt_table )
+TGM=$( cat /tmp/gdm.txt_table )
+TGT=$( cat /tmp/gdt.txt_table )
+TGU=$( cat /tmp/gdu.txt_table )
+
+
+
+IKEY=$(curl "http://api.zbench.kirito.moe/getkey.php?AKEY=$AKEY" 2>/dev/null)
+echo "在线查看测评报告：https://zbench.kirito.moe/record-cn.php?IKEY=$IKEY"
+echo "您的测评报告已保存在 /root/report.html"
+
+# If use simple http server
+while :; do echo
+  read -p "你想现在查看您的测评报告吗? [y/n]: " ifreport
+  if [[ ! $ifreport =~ ^[y,n]$ ]]; then
+    echo "输入错误! 请确保你输入的是 'y' 或者 'n'"
+  else
+    break
+  fi
+done
+
+if [[ $ifreport == 'y' ]];then
+    echo ""
+    myip=`curl -m 10 -s http://members.3322.org/dyndns/getip`
+    echo "访问 http://${myip}:8001/index.html 查看您的测试报告，按 Ctrl + C 退出" 
+	cd /tmp/report
+    python -m SimpleHTTPServer 8001
+    iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 8001 -j ACCEPT
+fi
 
