@@ -67,8 +67,16 @@ main() {
         tty_state=$(stty -g < /dev/tty)
         stty -echo < /dev/tty
         IFS= read -r secret < /dev/tty || die '密钥输入失败'
+        printf '\n%s' '请再次输入密码/密钥（隐藏输入）：' >&2
+        IFS= read -r confirmation < /dev/tty || die '确认输入失败'
         stty "$tty_state" < /dev/tty; tty_state=
         printf '\n' >&2
+        if [ "$secret" != "$confirmation" ]; then
+            unset secret confirmation
+            printf '%s\n' '两次输入不一致，请重新输入。' >&2
+            continue
+        fi
+        unset confirmation
         validate_key "$method" "$secret" && break
         printf '%s\n' 'SS2022 须为规范 Base64：AES128 解码 16 字节，其余 32 字节。' >&2
     done
