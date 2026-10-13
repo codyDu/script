@@ -1,0 +1,30 @@
+name: Alpine Shadowsocks validation
+on:
+  push:
+    paths: ['alpine-shadowsocks/**', '.github/workflows/alpine-shadowsocks.yml']
+  pull_request:
+    paths: ['alpine-shadowsocks/**', '.github/workflows/alpine-shadowsocks.yml']
+permissions:
+  contents: read
+jobs:
+  alpine:
+    runs-on: ubuntu-latest
+    container: alpine:3.23
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax, validation, and real ssserver smoke test
+        shell: sh
+        run: |
+          apk add --no-cache shadowsocks-rust-ssserver jq
+          cd alpine-shadowsocks
+          sh -n install.sh
+          sh tests.sh
+          umask 077
+          tempdir=$(mktemp -d)
+          trap '[ -z "${server_pid:-}" ] || kill "$server_pid" 2>/dev/null || :; rm -rf "$tempdir"' EXIT
+          jq -n '{server:"127.0.0.1",server_port:19999,password:"x",method:"chacha20-ietf-poly1305",mode:"tcp_and_udp",udp_max_associations:128,runtime:{mode:"single_thread"}}' > "$tempdir/config.json"
+          ssserver -c "$tempdir/config.json" > "$tempdir/log" 2>&1 &
+          server_pid=$!
+          sleep 3
+          kill -0 "$server_pid" || { cat "$tempdir/log"; exit 1; }
+          awk '$2 ~ /:4E1F$/ && $4 == "0A" {found=1} END {exit !found}' /proc/net/tcp
